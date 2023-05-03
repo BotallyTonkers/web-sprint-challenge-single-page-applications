@@ -7,7 +7,7 @@ export default function Home() {
 
     const eatPizza = () => {
         console.log('Ordering...')
-        navigate.push('PizzaForm')
+        navigate('pizza')
     }
     return (
     <div className="home-wrapper">
