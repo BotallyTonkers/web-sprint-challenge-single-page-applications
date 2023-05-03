@@ -1,29 +1,22 @@
-import React from "react"
-import { useNavigate } from "react-router"
-import styled from "styled-components";
+import React from "react";
+import "../../src/App.css";
+import { useNavigate } from 'react-router-dom';
 
-const Buttonhome = styled.div`
-    padding: 0%;
-`
+export default function Home() {
+    const navigate = useNavigate()
 
-export default function Home()
-{
-    
-    const navigate = useNavigate();
-
-    
-    const routeToForm = () => 
-    {
-      
-      console.log(navigate);
-
-     
-      navigate("pizza");
+    const eatPizza = () => {
+        console.log('Ordering...')
+        navigate('pizza')
     }
-
-    //Return function
-  return (
-        <div className = "homebox">
-            <Buttonhome className= "tHeBuTtOn" id= "order-pizza" onClick={routeToForm}>ORDER YOU SOME PIZZA</Buttonhome>
-        </div>
-    )};
+    return (
+    <div className="home-wrapper">
+        <img
+        className="home-image"
+        src="https://pbs.twimg.com/media/EU-pgP9WAAIzw-_.jpg"
+        alt="raccoon eating pizza"
+        />
+        <button id ="order-pizza" onClick={eatPizza} >Order Pizza</button>
+    </div>
+    )
+}

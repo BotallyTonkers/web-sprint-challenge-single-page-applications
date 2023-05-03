@@ -1,111 +1,28 @@
-import React, { useState, useEffect } from "react";
-import { Route, Routes, NavLink} from "react-router-dom";
-import Home from "./Components/home";
-import Form from "./Components/form";
-import "./App.css";
-import axios from "axios";
-import { reach } from 'yup';
-import formSchema from "./Components/schema";
-const initialValues = {name:"",size:"", special:"",pepperoni:false, chicken:false,peppers:false,ham:false};
-const initialErrors = {name:"",size:""};
+import React from "react";
+import './App.css';
+import { Routes, Route, Link } from 'react-router-dom';
+import PizzaForm from './Components/PizzaForm';
+import Home from './Components/Home';
 
 
 
-const App = () => {
-  const [orders, setOrders] = useState([])//orders
-  const [formValues, setFormValues] = useState(initialValues);//intial starting values
-  const [errors, setErrors] = useState(initialErrors);//initial values for error 
-  const [disabled, setDisabled] = useState(true);//setting for button
-  
-  //my post for new order
-  const orderButton = newOrder => {
-    axios.post('https://reqres.in/api/orders', newOrder)
-    .then(res => {
-      setOrders([res.data.data, ...orders])
-    })
-    .catch(err => {
-      // console.log(err)
-    })
-    .finally(() => {
-      setFormValues(initialValues)``
-    })
-  }
-//comparing our input to our schema form
-const validate = (name, value) => {
-  reach(formSchema, name)
-    .validate(value)
-    .then(() => setErrors({...errors, [name]: ''}))
-    .catch(err => setErrors({...errors,[name]: err.errors[0]}))
-}
+function App() {
 
-
-
-const inputChange = (name, value) => {
-  validate(name, value)
-  setFormValues({
-  ...formValues,[name]: value
-  })
-}
-  //{name:"",Size:"",special:""};
-  const formSubmit = (event) => {
-    const newOrder = {
-      name: formValues.name,
-      size: formValues.size,
-      special: formValues.special,
-      pepperoni: formValues.pepperoni,
-      chicken: formValues.chicken,
-      peppers: formValues.peppers,
-      ham: formValues.ham
-    }
-    //on submit this should post neworder containing the values
-    orderButton(newOrder)
-  }
-
-  useEffect(() => 
-    {
-        formSchema.isValid(formValues).then(valid => setDisabled(!valid))
-        //Dependency arrays
-    }, [formValues]);
-
-    
-  
-    
-  
-  
   return (
-    
-    <>
-    {/* created a header everyone needs those */}
-    <header className="App-header">
-      {/* creating a nav probably also need that */}
-      <h1>Lambda Eats</h1>
-      {/* note to self had a problem saying navlink needed to be inside the router check index.js and make sure app is wrapped in router. */}
-      <nav>
-        {/* setting my links keys */}
-        
-          <NavLink className ="button" exact to='/'>Home</NavLink>
-          
-        <NavLink className ="button" exact to="/help">Help!</NavLink>
-      </nav>
-      <p>Order Up my dude</p>
-        
-      </header>
-    {/* using switch and route */}
-    <Routes>  
-      {/* routing path to my components */}
-      <Route exact path = "/" component = {Home}/>
-      <Route path = "/pizza">
-        <Form
-            formValues={formValues}
-            change={inputChange}
-            submit={formSubmit}
-            disabled={disabled}
-            errors={errors}
-        /> 
-      </Route>
-    </Routes>
+   <div>
+    <nav>
+        <h1 className='order-pizza'>Amanda's Pizza</h1>
+        <div className='nav-links'>
+          <Link to='/'>Home</Link>
+          <Link to='/pizza'>Order Pizza</Link>
+        </div>
+    </nav>
+    <Routes>
+      <Route path="/" element={<Home />} />
 
-    </>
+      <Route path="/pizza" element={<PizzaForm />} />
+    </Routes>
+   </div>
   );
 };
 export default App;
