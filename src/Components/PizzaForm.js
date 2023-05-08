@@ -1,4 +1,4 @@
-import React, { useState, } from 'react';
+import React, { useState, useEffect} from 'react';
 import axios from 'axios';
 import * as yup from "yup";
 import schema from '../Validation/formSchema'
@@ -70,7 +70,7 @@ function Form () {
 
     const handleSubmit = (evt) => {
         axios
-          .post("https://reqres.in/api/users", formValues)
+          .post("https://reqres.in/api/orders", formValues)
           .then(
             (res) => setNewPizza([res.data, ...newPizza]),
             setFormValues(emptyFormValues)
@@ -125,7 +125,9 @@ function Form () {
     
     
     
-   
+    useEffect(() => {
+        schema.isValid(formValues).then((valid) => {});
+      }, [formValues]);
 
 
     return (
