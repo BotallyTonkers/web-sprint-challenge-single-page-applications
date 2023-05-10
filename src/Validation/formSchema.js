@@ -2,7 +2,7 @@ import * as yup from "yup";
  
  
  
-const Schema = yup.object().shape({
+const formSchema = yup.object().shape({
        name: yup
          .string()
          .trim()
@@ -10,4 +10,4 @@ const Schema = yup.object().shape({
          .min(2, 'name must be at least 2 characters'),
    })
 
-   export default Schema;
+   export default formSchema

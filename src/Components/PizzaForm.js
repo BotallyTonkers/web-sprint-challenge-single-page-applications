@@ -1,7 +1,8 @@
 import React, { useState, useEffect} from 'react';
 import axios from 'axios';
 import * as yup from "yup";
-import schema from '../Validation/formSchema'
+import schema from '../Validation/formSchema';
+
 
 
 
@@ -37,18 +38,18 @@ const emptyErrors = {
     name: '',
     size: '',
     sauce: '',
-    cheese: false,
-    pepperoni: false,
-    anchovies: false,
-    sausage: false,
-    mushrooms: false,
-    peppers: false,
+    cheese: '',
+    pepperoni: '',
+    anchovies: '',
+    sausage: '',
+    mushrooms: '',
+    peppers: '',
     specialInstructions:''
 }
 
 
 
-function Form () {
+function Form() {
     const [pizzaOrder, setPizzaOrder] = useState(initialPizzaOrder)
     const [formValues, setFormValues] = useState(initialFormValues) 
     const [errors, setErrors] = useState(emptyErrors)
@@ -67,6 +68,7 @@ function Form () {
 
     const [newPizza, setNewPizza] = useState([]);
     
+    
 
     const handleSubmit = (evt) => {
         axios
@@ -78,6 +80,8 @@ function Form () {
           .catch((err) => console.log(err));
       };
 
+
+
       const validate = (name, value) => {
         yup
           .reach(schema, name)
@@ -87,6 +91,7 @@ function Form () {
           })
           .catch((err) => setErrors({ ...errors, [name]: err.errors[0] }));
       };
+   
     
       const handleChange = (name, value) => {
         validate(name, value);
