@@ -1,7 +1,5 @@
 import React, { useState, useEffect} from 'react';
 import axios from 'axios';
-import * as yup from "yup";
-import schema from '../Validation/formSchema';
 
 
 
@@ -52,7 +50,7 @@ const emptyErrors = {
 function Form() {
     const [pizzaOrder, setPizzaOrder] = useState(initialPizzaOrder)
     const [formValues, setFormValues] = useState(initialFormValues) 
-    const [errors, setErrors] = useState(emptyErrors)
+    const [validName, setValidName] = useState(true)
 
     const postNewOrder = newOrder => {
         axios.post('https://reqres.in/api/orders', newOrder)
@@ -81,20 +79,26 @@ function Form() {
       };
 
 
-
-      const validate = (name, value) => {
-        yup
-          .reach(schema, name)
-          .validate(value)
-          .then(() => {
-            setErrors({ ...errors, [name]: "" });
-          })
-          .catch((err) => setErrors({ ...errors, [name]: err.errors[0] }));
-      };
-   
+    const handleNameChange = e => {
+       const {name, value} = e.target
+       setFormValues((previousFormValues) => ({
+        ...previousFormValues,
+        [name]: value
+       }))
+       setValidName(value.length >= 2)
+    }
+ 
+    const validateNameLength = e => {
+       e.preventDefault()
+       if (validName){
+        console.log("name is valid", formValues.name)
+       }
+        }
     
-      const handleChange = (name, value) => {
-        validate(name, value);
+
+    
+    const handleChange = (name, value) => {
+        validateNameLength(name, value);
         setFormValues({ ...formValues, [name]: value });
       };
 
@@ -130,9 +134,9 @@ function Form() {
     
     
     
-    useEffect(() => {
-        schema.isValid(formValues).then((valid) => {});
-      }, [formValues]);
+    // useEffect(() => {
+    //     schema.isValid(formValues).then((valid) => {});
+    //   }, [formValues]);
 
 
     return (
@@ -144,15 +148,21 @@ function Form() {
             change={handleChange}
             
             >
-            <label>Name:</label>
+            <label>
+                Name:
                      <input
                          type="text"
                          id="name-input"
                          name="name"
                          value={formValues.name}
-                         onChange={onChange}
+                         onChange={handleNameChange}
                       />
-                
+             </label>
+            {!validName && (
+                <div>
+                    "name must be at least 2 characters"
+                </div>
+            )}
                 <label>Choice Of Size
                 <div>
              <select id="size-dropdown" name="size" onChange={onChange}>
