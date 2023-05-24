@@ -1,6 +1,6 @@
 import React, { useState, useEffect} from 'react';
 import axios from 'axios';
-
+import * as yup from 'yup';
 
 
 
@@ -51,6 +51,7 @@ function Form() {
     const [pizzaOrder, setPizzaOrder] = useState(initialPizzaOrder)
     const [formValues, setFormValues] = useState(initialFormValues) 
     const [validName, setValidName] = useState(true)
+    const [errors, setErrors] = useState(emptyErrors)
 
     const postNewOrder = newOrder => {
         axios.post('https://reqres.in/api/orders', newOrder)
@@ -87,18 +88,43 @@ function Form() {
        }))
        setValidName(value.length >= 2)
     }
- 
-    const validateNameLength = e => {
-       e.preventDefault()
-       if (validName){
-        console.log("name is valid", formValues.name)
-       }
-        }
     
-
+        const formSchema = yup.object().shape({
+            name: yup
+                .string()
+                .trim()
+                .min(2, "name must be at least 2 characters"),
+            size: yup
+                .string()
+                .oneOf(["Smallboi", "Mediumboi", "Largboi"], "Choose a size"),
+            cheese: yup
+                .boolean(),
+            pepperoni: yup
+                .boolean(),
+            anchovies: yup
+                .boolean(),
+            sausage: yup
+                .boolean(),
+            mushrooms: yup
+                .boolean(),
+            peppers: yup
+                .boolean(),
+            specialInstructions:yup
+                .string()
+            })
+        
+        const validate = (name, value) => {
+            yup
+              .reach(formSchema, name)
+              .validate(value)
+              .then(() => {
+                setErrors({ ...errors, [name]: "" });
+              })
+              .catch((err) => setErrors({ ...errors, [name]: err.errors[0] }));
+          };
     
     const handleChange = (name, value) => {
-        validateNameLength(name, value);
+        validate(name, value);
         setFormValues({ ...formValues, [name]: value });
       };
 
@@ -134,9 +160,9 @@ function Form() {
     
     
     
-    // useEffect(() => {
-    //     schema.isValid(formValues).then((valid) => {});
-    //   }, [formValues]);
+    useEffect(() => {
+        formSchema.isValid(formValues).then((valid) => {});
+      }, [formValues]);
 
 
     return (
@@ -159,10 +185,9 @@ function Form() {
                       />
              </label>
             {!validName && (
-                <div>
-                    "name must be at least 2 characters"
-                </div>
+                alert("name must be at least 2 characters")
             )}
+            <h5>{errors.name}</h5>
                 <label>Choice Of Size
                 <div>
              <select id="size-dropdown" name="size" onChange={onChange}>
