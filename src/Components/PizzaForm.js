@@ -80,14 +80,14 @@ function Form() {
       };
 
 
-    const handleNameChange = e => {
-       const {name, value} = e.target
-       setFormValues((previousFormValues) => ({
-        ...previousFormValues,
-        [name]: value
-       }))
-       setValidName(value.length >= 2)
-    }
+    // const handleNameChange = e => {
+    //    const {name, value} = e.target
+    //    setFormValues((previousFormValues) => ({
+    //     ...previousFormValues,
+    //     [name]: value
+    //    }))
+    //    setValidName(value.length >= 2)
+    // }
     
         const formSchema = yup.object().shape({
             name: yup
@@ -123,11 +123,16 @@ function Form() {
               .catch((err) => setErrors({ ...errors, [name]: err.errors[0] }));
           };
     
-    const handleChange = (name, value) => {
+    // const handleChange = (name, value) => {
+    //     validate(name, value);
+    //     setFormValues({ ...formValues, [name]: value });
+    //   };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
         validate(name, value);
         setFormValues({ ...formValues, [name]: value });
       };
-
 
     const inputChange = (name, value) => {
         setFormValues({
@@ -181,12 +186,12 @@ function Form() {
                          id="name-input"
                          name="name"
                          value={formValues.name}
-                         onChange={handleNameChange}
+                         onChange={handleChange}
                       />
              </label>
-            {!validName && (
-                alert("name must be at least 2 characters")
-            )}
+            {/* {!validName && (
+                // alert("name must be at least 2 characters")
+            )} */}
             <h5>{errors.name}</h5>
                 <label>Choice Of Size
                 <div>
